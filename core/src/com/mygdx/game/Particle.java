@@ -1,6 +1,7 @@
 package com.mygdx.game;
-import static java.lang.Math.abs;
-import static java.lang.Math.sqrt;
+import com.badlogic.gdx.math.Vector2;
+
+import static java.lang.Math.*;
 
 public class Particle {
     // Radius: meters
@@ -34,7 +35,6 @@ public class Particle {
     }
 
     public void update(float delta) {
-        manageCollisions();
         // Update velocity
         if (abs(velocityY) < 0.1f && y <= radius + 0.1f) {
             velocityY = 0;
@@ -75,25 +75,5 @@ public class Particle {
         }
     }
 
-
-    public void manageCollisions(){
-        for (Particle p: physicsTest.particles){
-            if (p == this) continue;
-            float dx = abs(x - p.x);
-            float dy = abs(y - p.y);
-            double d = sqrt(dx*dx + dy*dy);
-
-            if (d <= radius+p.radius){
-                float newVelocityX = (velocityX * (mass - p.mass) + 2 * p.mass * p.velocityX) / (mass + p.mass);
-                float newVelocityY = (velocityY * (mass - p.mass) + 2 * p.mass * p.velocityY) / (mass + p.mass);
-
-                // adjust velocities according to the bounce coefficient
-                velocityX = (float) (newVelocityX * Math.sqrt(bounceCoefficient));
-                velocityY = (float) (newVelocityY * Math.sqrt(bounceCoefficient));
-
-            }
-        }
-
-    }
 
 }
