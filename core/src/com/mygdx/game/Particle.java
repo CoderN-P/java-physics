@@ -1,4 +1,6 @@
 package com.mygdx.game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 import static java.lang.Math.*;
@@ -40,7 +42,23 @@ public class Particle {
             velocityY = 0;
             y = radius + 0.05f;
         } else {
-            velocityY -= GRAVITY * delta;
+            if (!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+                velocityY -= GRAVITY * delta;
+            } else {
+
+                float dx = Gdx.input.getX() / physicsTest.scale - x;
+                float dy = (physicsTest.HEIGHT - Gdx.input.getY()) / physicsTest.scale - y;
+                float d = (float) sqrt(dx * dx + dy * dy);
+                if (d > radius){
+                    velocityY -= GRAVITY * delta;
+                } else {
+                    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+                        velocityX = 0;
+                        velocityY = 0;
+                    }
+                }
+            }
+
         }
 
 
