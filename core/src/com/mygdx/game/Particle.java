@@ -2,6 +2,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import static java.lang.Math.*;
 
@@ -15,6 +16,7 @@ public class Particle {
 
     public float x, y, velocityX, velocityY, minX, minY, maxX, maxY, radius, bounceCoefficient, mass;
     static final float GRAVITY = 9.8f; // m/s^2
+    public Vector3 color;
     PhysicsTest physicsTest;
 
     public Particle(float x, float y, float velocityX, float velocityY, float minX, float minY, float maxX, float maxY, float radius, float bounceCoefficient, float mass, PhysicsTest physicsTest) {
@@ -30,6 +32,7 @@ public class Particle {
         this.bounceCoefficient = bounceCoefficient;
         this.mass = mass;
         this.physicsTest = physicsTest;
+        this.color = new Vector3((float) Math.random(), (float) Math.random(), (float) Math.random());
     }
 
     public float getKE(){
