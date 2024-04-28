@@ -88,8 +88,8 @@ public class GameInputProcessor implements InputProcessor {
             float dx = x/physicsTest.scale - last.x;
             float dy = (physicsTest.HEIGHT - y)/physicsTest.scale - last.y;
             last.radius = (float) Math.sqrt(dx*dx + dy*dy);
-            // float MASS_SCALE = 2; // 2kg per 1 meter radius
-            // last.mass = last.radius*MASS_SCALE;
+            float MASS_SCALE = 2; // 2kg per 1 meter radius
+            last.mass = last.radius*MASS_SCALE;
         }
         return true;
     }
