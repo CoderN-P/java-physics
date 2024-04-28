@@ -23,6 +23,10 @@ public class PhysicsTest extends ApplicationAdapter {
 
 	ArrayList<Particle> particles = new ArrayList<Particle>();
 
+
+
+	public SoftbodyMass[] masses = new SoftbodyMass[1];
+
 	
 	@Override
 	public void create () {
@@ -32,6 +36,9 @@ public class PhysicsTest extends ApplicationAdapter {
 		viewport = new FitViewport(WIDTH, HEIGHT, camera);
 		camera.setToOrtho(false, WIDTH, HEIGHT);
 
+		masses[0] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)-1, this);
+
+		// masses[1] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)+2, this);
 
 	}
 
@@ -42,77 +49,56 @@ public class PhysicsTest extends ApplicationAdapter {
 		shapeRenderer.setColor(0, 0, 1, 1);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-		// Draw particles
+		for (int i = 0; i < particles.size(); i++) {
+			if (!paused){
+				for (int j = i + 1; j < particles.size(); j++) {
+					Particle p1 = particles.get(i);
+					Particle p2 = particles.get(j);
 
+					float dx = (p1.x - p2.x);
+					float dy = (p1.y - p2.y);
+					float d = (float) sqrt(dx*dx + dy*dy);
 
+					if (d <= p1.radius + p2.radius){
+						float m1 = p1.mass;
+						float m2 = p2.mass;
 
-			for (int i = 0; i < particles.size(); i++) {
-				if (!paused){
-					for (int j = i + 1; j < particles.size(); j++) {
-						Particle cur = particles.get(i);
-						Particle p = particles.get(j);
-						float dx = cur.x - p.x;
-						float dy = cur.y - p.y;
-						double d = sqrt(dx * dx + dy * dy);
+						Vector2 vrel = new Vector2(p1.velocityX-p2.velocityX, p1.velocityY-p2.velocityY);
+						Vector2 dir = new Vector2(dx, dy);
+						double dot = vrel.dot(dir.nor());
 
-						if (d <= cur.radius + p.radius) {
-							// m1 = mass, m2 = p.mass
+						float changeX = (float) (2*m2/(m1 + m2)*dot*dir.x);
+						float changeY = (float) (2*m2/(m1 + m2)*dot*dir.y);
+						float newV1X = p1.velocityX - changeX;
+						float newV1Y = p1.velocityY - changeY;
 
-							// Calculate angles
-							double vtheta = Math.atan2(cur.velocityY, cur.velocityX);
-							double dtheta = Math.atan2(dy, dx);
+						float newV2X = p2.velocityX + changeX;
+						float newV2Y = p2.velocityY + changeY;
 
-							// Calculate relative velocity
-							double vrel = (cur.velocityX - p.velocityX) * (dx) + (cur.velocityY - p.velocityY) * (dy);
-
-							// Conservation of linear momentum
-							double m1 = cur.mass;
-							double m2 = p.mass;
-							double newVrel = p.bounceCoefficient * (2 * m2 * vrel) / (m1 + m2);
-
-							// Update velocities for linear momentum conservation
-							cur.velocityX -= (float) (newVrel * Math.cos(dtheta));
-							cur.velocityY -= (float) (newVrel * Math.sin(dtheta));
-							p.velocityX += (float) (newVrel * Math.cos(dtheta));
-							p.velocityY += (float) (newVrel * Math.sin(dtheta));
-
-							// Conservation of kinetic energy
-							double curKE = 0.5 * m1 * (cur.velocityX * cur.velocityX + cur.velocityY * cur.velocityY);
-							double pKE = 0.5 * m2 * (p.velocityX * p.velocityX + p.velocityY * p.velocityY);
-
-							double totalKE_before = (curKE + pKE);
-
-							// Update velocities for kinetic energy conservation
-							double curFactor = 0.5 * cur.mass * newVrel * newVrel / curKE;
-							double pFactor = 0.5 * p.mass * newVrel * newVrel / pKE;
-
-							cur.velocityX *= curFactor;
-							cur.velocityY *= curFactor;
-
-							p.velocityX *= pFactor;
-							p.velocityY *= pFactor;
-
-							double totalKE_after = 0.5 * m1 * (cur.velocityX * cur.velocityX + cur.velocityY * cur.velocityY)
-									+ 0.5 * m2 * (p.velocityX * p.velocityX + p.velocityY * p.velocityY);
-
-							// Adjust velocities to ensure conservation of kinetic energy
-							double keFactor = Math.sqrt(totalKE_before / totalKE_after);
-							cur.velocityX *= keFactor;
-							cur.velocityY *= keFactor;
-							p.velocityX *= keFactor;
-							p.velocityY *= keFactor;
-
-
-						}
+						p1.velocityX = newV1X;
+						p1.velocityY = newV1Y;
+						p2.velocityX = newV2X;
+						p2.velocityY = newV2Y;
 					}
-
-
-					particles.get(i).update(Gdx.graphics.getDeltaTime());
-
 				}
 
-				shapeRenderer.circle(particles.get(i).x*scale, particles.get(i).y*scale, particles.get(i).radius*scale, 100);
+
+				particles.get(i).update(Gdx.graphics.getDeltaTime());
+
+			}
+			Particle p = particles.get(i);
+			shapeRenderer.setColor(p.color.x, p.color.y, p.color.z, 1);
+			shapeRenderer.circle(p.x*scale, p.y*scale, p.radius*scale, 100);
 		}
+
+		// Draw particles
+		for (int i = 0; i < masses.length; i++){
+			masses[i].update(paused);
+		}
+
+
+
+
 
 		shapeRenderer.end();
 
@@ -125,3 +111,9 @@ public class PhysicsTest extends ApplicationAdapter {
 
 	}
 }
+
+
+
+// Code for rigid body collisions
+
+
