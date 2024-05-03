@@ -11,10 +11,10 @@ public class SoftbodyMass {
     PhysicsTest physicsTest;
 
     static final double springLength = 0.2; // meters
-    static final double springStiffness = 300; // N/m 350
-    static final double springDamping = 0.5; // Ns/m 0.02
+    static final double springStiffness = 1; // N/m 350
+    static final double springDamping = 0.02; // Ns/m 0.02
     static final double collisionRadius = 0.075; // meters
-    static final float coefficientOfRestitution = 1f;
+    static final float coefficientOfRestitution = 0.5f;
 
 
 
@@ -93,7 +93,7 @@ public class SoftbodyMass {
 
             for (int i = 0; i < particles.length; i++) {
                 for (int j = 0; j < particles[i].length; j++) {
-                    particles[i][j].rk4Integration(Gdx.graphics.getDeltaTime(), true, true);
+                    particles[i][j].update();
                 }
             }
 
@@ -192,6 +192,8 @@ public class SoftbodyMass {
         float yChange = (float) (2*dot*dir.y);
         p1.velocity.x -= xChange;
         p1.velocity.y -= yChange;
+
+
 
         double overlap = 2 * collisionRadius - p1.position.dst(p2.position);
 

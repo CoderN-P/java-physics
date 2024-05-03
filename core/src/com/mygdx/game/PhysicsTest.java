@@ -13,19 +13,20 @@ import static java.lang.Math.sqrt;
 public class PhysicsTest extends ApplicationAdapter {
 	public final int WIDTH = 800;
 	public final int HEIGHT = 480;
+	public int c = 0;
 	ShapeRenderer shapeRenderer;
 	Particle particle;
 	OrthographicCamera camera = new OrthographicCamera();
 	FitViewport viewport;
 
-	float scale = 80; // 80 pixels per meter
+	float scale = 40; // 80 pixels per meter
 	public boolean paused = false;
 
 	ArrayList<Particle> particles = new ArrayList<Particle>();
 
+	public GravitationalSystem gravitationalSystem;
 
-
-	public SoftbodyMass[] masses = new SoftbodyMass[1];
+	public SoftbodyMass[] masses = new SoftbodyMass[0];
 
 	
 	@Override
@@ -36,7 +37,9 @@ public class PhysicsTest extends ApplicationAdapter {
 		viewport = new FitViewport(WIDTH, HEIGHT, camera);
 		camera.setToOrtho(false, WIDTH, HEIGHT);
 
-		masses[0] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)-1, this);
+
+		gravitationalSystem = new GravitationalSystem(2, 1, this);
+		// masses[0] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)-1, this);
 
 		// masses[1] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)+2, this);
 
@@ -44,10 +47,13 @@ public class PhysicsTest extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+
 		ScreenUtils.clear(0, 0, 0, 0);
 		shapeRenderer.setProjectionMatrix(camera.combined);
+
 		shapeRenderer.setColor(0, 0, 1, 1);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
 
 		for (int i = 0; i < particles.size(); i++) {
 			if (!paused){
@@ -92,9 +98,13 @@ public class PhysicsTest extends ApplicationAdapter {
 		}
 
 		// Draw particles
-		for (int i = 0; i < masses.length; i++){
-			masses[i].update(paused);
-		}
+        for (SoftbodyMass mass : masses) {
+            mass.update(paused);
+        }
+
+
+		gravitationalSystem.render();
+
 
 
 
