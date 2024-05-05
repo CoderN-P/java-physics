@@ -1,14 +1,17 @@
 package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class GravitationalParticle {
     public float minX, minY, maxX, maxY, radius, mass;
     public Vector2 velocity, position, curForce;
+    public boolean renderInCenter;
+    public Vector3 color;
     PhysicsTest physicsTest;
 
 
-    public GravitationalParticle(Vector2 position, Vector2 velocity, float minX, float minY, float maxX, float maxY, float radius, float mass, PhysicsTest physicsTest){
+    public GravitationalParticle(Vector2 position, Vector2 velocity, float minX, float minY, float maxX, float maxY, float radius, float mass, PhysicsTest physicsTest, boolean renderInCenter){
         this.position = position;
         this.velocity = velocity;
         this.minX = minX;
@@ -19,6 +22,8 @@ public class GravitationalParticle {
         this.mass = mass;
         this.physicsTest = physicsTest;
         this.curForce = new Vector2(0, 0);
+        this.renderInCenter = renderInCenter;
+        this.color = new Vector3((float) Math.random(), (float) Math.random(), (float) Math.random());
     }
 
     public void update(){
@@ -26,9 +31,14 @@ public class GravitationalParticle {
         this.position.add(this.velocity.cpy().scl(Gdx.graphics.getDeltaTime()));
     }
 
-    public void render(){
+    public void render(Vector2 reference){
         update();
         this.curForce = new Vector2(0, 0);
-        physicsTest.shapeRenderer.circle(position.x*physicsTest.scale, position.y*physicsTest.scale, radius*physicsTest.scale);
+
+        if (renderInCenter){
+            physicsTest.shapeRenderer.circle((float) physicsTest.WIDTH/2,  (float) physicsTest.HEIGHT/2, radius*physicsTest.scale);
+        } else {
+            physicsTest.shapeRenderer.circle((position.x - reference.x + physicsTest.WIDTH/(2*physicsTest.scale)) * physicsTest.scale, (position.y - reference.y + physicsTest.HEIGHT/(2*physicsTest.scale )) * physicsTest.scale, (float) radius * physicsTest.scale);
+        }
     }
 }

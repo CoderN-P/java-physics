@@ -8,7 +8,7 @@ public class SoftbodyParticle {
     Vector2 position;
     Vector2 velocity;
 
-    public Spring springs[]; // Springs connected to this particle
+    public Spring[] springs; // Springs connected to this particle
     public int addedSprings = 0;
 
     PhysicsTest physicsTest;
@@ -32,7 +32,6 @@ public class SoftbodyParticle {
 
         for (int i = 0; i < addedSprings; i++){
             Vector2[] forces = springs[i].getSpringForces();
-            System.out.println(Arrays.toString(forces));
             if (springs[i].p1 == this){
                 springForces.add(forces[0].scl(0.2f));
             } else {
@@ -41,8 +40,7 @@ public class SoftbodyParticle {
         }
         this.velocity.add(springForces.cpy().scl(Gdx.graphics.getDeltaTime()));
         this.velocity.y += GRAVITY * Gdx.graphics.getDeltaTime();
-        position.x += velocity.x * Gdx.graphics.getDeltaTime();
-        position.y += velocity.y * Gdx.graphics.getDeltaTime();
+        position.add(velocity.cpy().scl(Gdx.graphics.getDeltaTime()));
 
     }
 
@@ -52,6 +50,6 @@ public class SoftbodyParticle {
     }
 
     void render(){
-        physicsTest.shapeRenderer.circle(position.x*physicsTest.scale,  position.y*physicsTest.scale, (float) RADIUS*physicsTest.scale);
+        physicsTest.shapeRenderer.circle(position.x * physicsTest.scale, position.y* physicsTest.scale, (float) RADIUS * physicsTest.scale);
     }
 }

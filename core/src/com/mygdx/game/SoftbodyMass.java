@@ -11,8 +11,8 @@ public class SoftbodyMass {
     PhysicsTest physicsTest;
 
     static final double springLength = 0.2; // meters
-    static final double springStiffness = 1; // N/m 350
-    static final double springDamping = 0.02; // Ns/m 0.02
+    static final double springStiffness = 0; // N/m 350
+    static final double springDamping = -0.02; // Ns/m 0.02
     static final double collisionRadius = 0.075; // meters
     static final float coefficientOfRestitution = 0.5f;
 
@@ -98,8 +98,6 @@ public class SoftbodyMass {
             }
 
 
-
-
         }
 
         render();
@@ -158,9 +156,9 @@ public class SoftbodyMass {
         }
 
         physicsTest.shapeRenderer.setColor(1, 0, 0, 1);
-        for (int i = 0; i < particles.length; i++){
-            for (int j = 0; j < particles[i].length; j++){
-                particles[i][j].render();
+        for (SoftbodyParticle[] particle : particles) {
+            for (SoftbodyParticle softbodyParticle : particle) {
+                softbodyParticle.render();
             }
         }
 

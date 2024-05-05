@@ -26,7 +26,7 @@ public class PhysicsTest extends ApplicationAdapter {
 
 	public GravitationalSystem gravitationalSystem;
 
-	public SoftbodyMass[] masses = new SoftbodyMass[0];
+	public SoftbodyMass[] masses = new SoftbodyMass[1];
 
 	
 	@Override
@@ -39,9 +39,8 @@ public class PhysicsTest extends ApplicationAdapter {
 
 
 		gravitationalSystem = new GravitationalSystem(2, 1, this);
-		// masses[0] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)-1, this);
-
-		// masses[1] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)+2, this);
+		masses[0] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)-1, this);
+		//masses[1] = new SoftbodyMass(1f, 2, WIDTH/(2*scale), HEIGHT/(2*scale)+2, this);
 
 	}
 
@@ -98,9 +97,9 @@ public class PhysicsTest extends ApplicationAdapter {
 		}
 
 		// Draw particles
-        for (SoftbodyMass mass : masses) {
+        /*for (SoftbodyMass mass : masses) {
             mass.update(paused);
-        }
+        }*/
 
 
 		gravitationalSystem.render();

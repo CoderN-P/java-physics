@@ -32,7 +32,7 @@ public class Spring {
     }
 
      Vector2[] getSpringForces(){
-        Vector2 d = p2.position.cpy().sub(p1.position);
+        Vector2 d = p2.position.cpy().sub(p1.position.cpy());
         double displacement = d.len() - restLength;
         d = d.nor();
         Vector2 velocityDiff = p2.velocity.cpy().sub(p1.velocity);
@@ -40,7 +40,7 @@ public class Spring {
         double springForce = displacement*stiffness;
         double totalSpringForce = springForce + dampingForce;
         Vector2 p1Force = d.cpy().scl((float) totalSpringForce);
-        Vector2 p2Force = p1.position.cpy().sub(p2.position).nor().scl((float) totalSpringForce);
+        Vector2 p2Force = p1.position.cpy().sub(p2.position.cpy()).nor().scl((float) totalSpringForce);
         return new Vector2[]{p1Force, p2Force};
     }
 
